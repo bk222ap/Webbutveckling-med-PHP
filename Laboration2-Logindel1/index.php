@@ -9,6 +9,6 @@ require_once ("controller/AppController.php");
 require_once ("controller/AuthenticationController.php");
 require_once ("model/User.php");
 
+// AppController runs the application
 $appController = new AppController();
-
 $appController->run();

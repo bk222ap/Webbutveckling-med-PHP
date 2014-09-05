@@ -1,10 +1,28 @@
 <?php
 
+/**
+ * This is the base class for all views in the application
+ * 
+ * @author Svante Arvedson
+ */
 class HTMLview
 {
+	/**
+	 * @var string	The content in the title tag
+	 */
 	private $title;
+	
+	/**
+	 * @var string	The content in the body tag
+	 */
 	private $body;
 	
+	/**
+	 * This function echos the HTML code.
+	 *
+	 * @throws Exception	Throws an exception if $this->title or $this->body isn't set. 
+	 * @return void
+	 */
 	public function echoHTML()
 	{
 		if ($this->title == null)
@@ -31,16 +49,33 @@ class HTMLview
 		echo $HTML;
 	}
 	
+	/**
+	 * Setter for $this->title
+	 * 
+	 * @param string	The title content
+	 * @return void
+	 */
 	public function setTitle($title) 
 	{
 		$this->title = $title;
 	}
 	
+	/**
+	 * Setter for $this->body
+	 * 
+	 * @param string	The body content
+	 * @return void
+	 */
 	public function setBody($body)
 	{
 		$this->body = $body;
 	}
 	
+	/**
+	 * This method return the value of the GET parameter "action"
+	 * 
+	 * @return string	The GET parameter "action"
+	 */
 	public function getAction()
 	{
 		return Helpers::getGetParameter(Strings::$ActionParameterIndex);

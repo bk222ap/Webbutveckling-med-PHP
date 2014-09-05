@@ -1,16 +1,20 @@
 <?php
 
+/**
+ * The main contoller for the application.
+ * 
+ * @author Svante Arvedson
+ */
 class AppController
 {
+	/**
+	 * The application runs from here. 
+	 *
+	 * @return void
+	 */
 	public function run()
 	{
-		if (Helpers::requestIsGET())
-		{
-			$view = new UnauthenticatedView();
-			$view->createHTML();
-			$view->echoHTML();
-		}
-		else
+		if (Helpers::isPostback())
 		{
 			$view = new HTMLView();
 			
@@ -25,6 +29,12 @@ class AppController
 					$authenticationController->doLogout();
 					break;
 			}
+		}
+		else
+		{
+			$view = new UnauthenticatedView();
+			$view->createHTML();
+			$view->echoHTML();
 		}
 	}
 }
