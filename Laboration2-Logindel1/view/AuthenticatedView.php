@@ -2,21 +2,29 @@
 
 class AuthenticatedView extends HTMLview
 {
-	public function __construct()
-	{	
-		$title = "Ulla inloggad";
-		$body = "
-				<div id='main'>
-					<h1>Ulla inloggad</h1>
-					<p>Välkommen Ulla!</p>
-					<form method='POST' action='#'>
-						<fieldset>
-							<legend>Logga ut:</legend>
-							<input type='button' name='logOut' value='Logga ut' />
-						</fieldset>
-					</form>
-				</div>";
+	private $user;
+	
+	public function createHTML()
+	{
+		if ($this->user == null)
+		{
+			throw new Exception(Strings::$ErrorUserUnset);
+		}
 		
-		parent::__construct($title, $body);
+		$username = $this->user->getUsername();
+		
+		$this->setTitle($username . ' inloggad');
+		$this->setBody(
+			'<h1>' . $this->user->getUsername() . ' inloggad</h1>
+			<p>Välkommen ' . $username . '!</p>
+			<form method="POST" action="?' . Strings::$ActionParameterIndex . '=' . Strings::$ActionParameterValueLogout . '">
+				<input type="submit" name="' . Strings::$InputLogoutButton . '" value="Logga ut" />
+			</form>'
+		);
+	}
+	
+	public function setUser(User $user)
+	{
+		$this->user = $user;
 	}
 }
