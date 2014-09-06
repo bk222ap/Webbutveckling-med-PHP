@@ -13,18 +13,18 @@ class AuthenticationController
 	 * @return void
 	 */
 	public function doLogin()
-	{
+	{	
 		$view = new UnauthenticatedView();
 		
 		if ($view->getUsername() == '' || $view->getPassword() == '')
 		{
 			if ($view->getUsername() == '')
 			{
-				$view->setErrorMessage(Strings::$ErrorLoginNoUsername);
+				Session::set(Strings::$Error, Strings::$ErrorLoginNoUsername);
 			}
 			else
 			{
-				$view->setErrorMessage(Strings::$ErrorLoginNoPassword);
+				Session::set(Strings::$Error, Strings::$ErrorLoginNoPassword);
 			}
 		}
 		else
@@ -33,23 +33,24 @@ class AuthenticationController
 			{
 				$user = new User($view->getUsername());
 				// Here are the successful login
-				if ($view->getPassword() == $user->getPassword())
+				if (Helper::cryptPassword($view->getPassword()) == $user->getPassword())
 				{
-					$view = new AuthenticatedView()
+					$view = new AuthenticatedView();
+					Session::set(Strings::$AuthenticatedUser, $user);
 					$view->setUser($user);
 				}
 				else
 				{
-					$view->setErrorMessage(Strings::$ErrorLoginWrongPassword);
+					Session::set(Strings::$Error, Strings::$ErrorLoginWrongPassword);
 				}
 			}
 			catch (exception $e)
 			{
-				$view->setErrorMessage(Strings::$ErrorLoginWrongUsername);
+				Session::set(Strings::$Error, Strings::$ErrorLoginWrongUsername);
 			}
 		}
-		$view->createHTML();
-		$view->echoHTML();
+		
+		Request::redirect('index.php');
 	}
 	
 	/**
@@ -59,8 +60,7 @@ class AuthenticationController
 	 */
 	public function doLogout()
 	{
-		$view = new UnauthenticatedView();
-		$view->createHTML();
-		$view->echoHTML();
+		Session::unsetVar(Strings::$AuthenticatedUser);
+		Request::redirect('index.php');
 	}
 }

@@ -20,8 +20,8 @@ class User
 	/**
 	 * Constructor method for this class 
 	 *
-	 * @throws Exception 	If $username does not exist
-	 * @param string	The username belonging to the user
+	 * @throws Exception 		If $username does not exist
+	 * @param string $username	The username belonging to the user
 	 */
 	public function __construct($username) 
 	{
@@ -32,7 +32,7 @@ class User
 		}
 		
 		$this->username = $username;
-		$this->password = "Password"; // This should also be fetched from the database.
+		$this->password = Helper::cryptPassword('Password'); // This should also be fetched from the database.
 	}
 	
 	/**

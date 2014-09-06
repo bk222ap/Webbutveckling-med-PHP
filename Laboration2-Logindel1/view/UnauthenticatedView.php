@@ -31,12 +31,12 @@ class UnauthenticatedView extends HTMLview
 	 */
 	public function getUsername()
 	{
-		if (!Helpers::isPostback())
+		if (!Request::isPostback())
 		{
 			throw new Exception(Strings::$ErrorIsNotPostback);
 		}
 		
-		return Helpers::getPostParameter(Strings::$InputUsername);
+		return Request::getPOST(Strings::$InputUsername);
 	}
 	
 	/**
@@ -47,12 +47,12 @@ class UnauthenticatedView extends HTMLview
 	 */
 	public function getPassword()
 	{
-		if (!Helpers::isPostback())
+		if (!Request::isPostback())
 		{
 			throw new Exception(Strings::$ErrorIsNotPostback);
 		}
 		
-		return Helpers::getPostParameter(Strings::$InputPassword);
+		return Request::getPOST(Strings::$InputPassword);
 	}
 	
 	/**
@@ -73,7 +73,8 @@ class UnauthenticatedView extends HTMLview
 	 */
 	private function createBody()
 	{
-		$body = '<h1>Ej inloggad</h1>
+		$body = '<h1>Laboration 2 - ba222ec</h1>
+				<h2>Ej inloggad</h2>
 				<form method="POST" action="?' . Strings::$ActionParameterIndex . '=' . Strings::$ActionParameterValueLogin . '">
 					<fieldset>
 						<legend>Logga in:</legend>' . "\n";

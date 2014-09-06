@@ -14,7 +14,9 @@ class AppController
 	 */
 	public function run()
 	{
-		if (Helpers::isPostback())
+		session_start();
+		
+		if (Request::isPostback())
 		{
 			$view = new HTMLView();
 			
@@ -32,7 +34,22 @@ class AppController
 		}
 		else
 		{
-			$view = new UnauthenticatedView();
+			if (Request::userIsAuthenticated())
+			{
+				$view = new AuthenticatedView();
+				$view->setUser(Session::get(Strings::$AuthenticatedUser));
+			}
+			else
+			{
+				$view = new UnauthenticatedView();
+				
+				if (Session::varIsSet(Strings::$Error))
+				{
+					$view->setErrorMessage(Session::get(Strings::$Error));
+					Session::unsetVar(Strings::$Error);
+				}
+			}
+
 			$view->createHTML();
 			$view->echoHTML();
 		}

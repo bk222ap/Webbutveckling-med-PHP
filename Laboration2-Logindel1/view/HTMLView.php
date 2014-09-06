@@ -52,7 +52,7 @@ class HTMLview
 	/**
 	 * Setter for $this->title
 	 * 
-	 * @param string	The title content
+	 * @param string $title	The title content
 	 * @return void
 	 */
 	public function setTitle($title) 
@@ -63,7 +63,7 @@ class HTMLview
 	/**
 	 * Setter for $this->body
 	 * 
-	 * @param string	The body content
+	 * @param string $body	The body content
 	 * @return void
 	 */
 	public function setBody($body)
@@ -78,6 +78,6 @@ class HTMLview
 	 */
 	public function getAction()
 	{
-		return Helpers::getGetParameter(Strings::$ActionParameterIndex);
+		return Request::getGET(Strings::$ActionParameterIndex);
 	}
 }

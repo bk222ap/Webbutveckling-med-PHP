@@ -46,8 +46,8 @@ class AuthenticatedView extends HTMLview
 	 */
 	private function createBody()
 	{
-		$body = '<h1>' . $this->user->getUsername() . ' inloggad</h1>
-				<p>Välkommen ' . $this->user->getUsername() . '!</p>
+		$body = '<h1>Laboration 2 - ba222ec</h1>
+				<h2>' . $this->user->getUsername() . ' inloggad</h2>
 				<form method="POST" action="?' . Strings::$ActionParameterIndex . '=' . Strings::$ActionParameterValueLogout . '">
 					<input type="submit" name="' . Strings::$InputLogoutButton . '" value="Logga ut" />
 				</form>';
