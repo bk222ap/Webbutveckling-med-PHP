@@ -7,6 +7,17 @@
  */
 class AppController
 {
+    /**
+     * This function configure the application to run in swedish
+     * 
+     * @return void
+     */
+    private function configureLocale()
+    {
+        setlocale(LC_ALL, array('sv_SE', 'swedish_sweden', 'sv'));
+        date_default_timezone_set('Europe/Stockholm');
+    }
+    
 	/**
 	 * The application runs from here. 
 	 *
@@ -14,12 +25,13 @@ class AppController
 	 */
 	public function run()
 	{
-		session_start();
-		
+		$this->configureLocale();
+		Session::start();
+
 		if (Request::isPostback())
 		{
 			$view = new HTMLView();
-			
+
 			switch ($view->getAction())
 			{
 				case Strings::$ActionParameterValueLogin:
@@ -34,20 +46,15 @@ class AppController
 		}
 		else
 		{
-			if (Request::userIsAuthenticated())
+			$authenticationModel = new AuthenticationModel();
+			
+			if ($authenticationModel->isUserAuthenticated())
 			{
-				$view = new AuthenticatedView();
-				$view->setUser(Session::get(Strings::$AuthenticatedUser));
+				$view = new AuthenticationView($authenticationModel);
 			}
 			else
 			{
-				$view = new UnauthenticatedView();
-				
-				if (Session::varIsSet(Strings::$Error))
-				{
-					$view->setErrorMessage(Session::get(Strings::$Error));
-					Session::unsetVar(Strings::$Error);
-				}
+				$view = new AuthenticationView($authenticationModel);
 			}
 
 			$view->createHTML();

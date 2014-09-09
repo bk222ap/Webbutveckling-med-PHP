@@ -45,18 +45,8 @@ class Request
 	 * @param string $to 	The page to go to
 	 * @return void
 	 */
-	public static function redirect($to)
+	public static function redirect($address)
 	{
-		header('Location: ' . $to);
-	}
-	
-	/**
-	 * Returns TRUE if user is authenticated
-	 * 
-	 * @return bool		TRUE is user is authenticated
-	 */
-	public static function userIsAuthenticated()
-	{
-		return Session::varIsSet(Strings::$AuthenticatedUser);
+		header('Location: ' . $address);
 	}
 }
