@@ -1,6 +1,5 @@
 <?php
 
-require_once ("src/resources/DomainConfig.php");
 require_once ("src/resources/helpers/Session.php");
 require_once ("src/resources/helpers/Request.php");
 require_once ("src/view/Cookie.php");

@@ -7,13 +7,16 @@
  */
 class AuthenticationModel
 {
-    private static $expirationOfCookies = 10;
-    private static $salt = '_Gt65Fr3k';
+    private static $expirationOfCookies = 300;
     
     /**
      * $var $placeUser      The index for the user object
      */
 	private static $placeUser = 'AuthenticationModel::User';
+    private static $placeIP = 'AuthenticationModel::IP';
+    private static $placeBrowser = 'AuthenticationModel::Browser';
+    
+    
 
     /**
      * Returns TRUE if the user is authenticated
@@ -22,7 +25,18 @@ class AuthenticationModel
      */
 	public function isUserAuthenticated()
 	{
-		return Session::varIsSet(self::$placeUser);
+	    $IP = $_SERVER['REMOTE_ADDR'];
+        $browser = $_SERVER['HTTP_USER_AGENT'];
+        
+        if (Session::varIsSet(self::$placeUser))
+        {
+            if (Session::get(self::$placeIP) === $IP &&
+                Session::get(self::$placeBrowser) === $browser)
+                {
+                    return true;
+                }
+        }
+        return false;
 	}
 
     /**
@@ -42,6 +56,9 @@ class AuthenticationModel
      */
 	public function loginUser($username, $password, $saveCredentials = false)
 	{
+	    $IP = $_SERVER['REMOTE_ADDR'];
+        $browser = $_SERVER['HTTP_USER_AGENT'];
+        
 	    try
 	    {
 	        $user = new User($username, $password);
@@ -58,20 +75,24 @@ class AuthenticationModel
 	    $users = file('files/Users', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($users as $u)
         {
-            $uElements = explode(';', $u, 2);
+            $uElements = explode(',', $u, 3);
             // If $user exists in the register
-            if ($user->getUsername() === $uElements[0] && $this->cryptPassword($user->getPassword()) === $uElements[1])
+            if ($user->getUsername() === $uElements[0] && 
+                crypt($user->getPassword(), $uElements[2]) === $uElements[1])
             {
                 if ($saveCredentials)
                 {
                     $user = new TempUser($user->getUsername());
-                    $userString = $user->getUsername() . ";" . $this->cryptPassword($user->getPassword()) . ";" . time() . "\n";
+                    $salt = $this->createSalt();
+                    $userString = $user->getUsername().",".crypt($user->getPassword(), $salt).",".$salt.",".time().",".$IP.",".$browser."\n";
                     
                     // Save temp login in a file
                     file_put_contents('files/tempUsers', $userString, FILE_APPEND);
                 }
                 
                 Session::set(self::$placeUser, $user);
+                Session::set(self::$placeIP, $IP);
+                Session::set(self::$placeBrowser, $browser);
                 return $user;
             }
         }
@@ -88,11 +109,15 @@ class AuthenticationModel
 	public function logoutUser()
 	{
 		Session::unsetVar(self::$placeUser);
+        Session::unsetVar(self::$placeIP);
+        Session::unsetVar(self::$placeBrowser);
 	}
     
     public function loginUserWithCredentials($username, $password)
     {
         $timestamp = time();
+        $IP = $_SERVER['REMOTE_ADDR'];
+        $browser = $_SERVER['HTTP_USER_AGENT'];
         
         try
         {
@@ -104,20 +129,31 @@ class AuthenticationModel
         }
         
         $users = file('files/tempUsers', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         foreach ($users as $u)
         {
-            $uElements = explode(';', $u, 3);
-            
-            if ($user->getUsername() === $uElements[0] && 
-                $this->cryptPassword($user->getPassword()) === $uElements[1] && 
-                $timestamp <= ($uElements[2] + self::$expirationOfCookies))
+            /* $uElements[0] == username
+             * $uElements[1] == password
+             * $uElements[2] == salt
+             * $uElements[3] == timestamp
+             * $uElements[4] == IP
+             * $uElements[5] == browser */
+            $uElements = explode(',', $u, 6);
+
+            if ($timestamp <= ($uElements[3] + self::$expirationOfCookies) && 
+                $uElements[4] == $IP && 
+                $uElements[5] == $browser && 
+                $user->getUsername() == $uElements[0])
             {
-                Session::set(self::$placeUser, $user);
-                return $user;
-            }  
+                if (crypt($user->getPassword(), $uElements[2]) === $uElements[1])
+                {
+                    Session::set(self::$placeUser, $user);
+                    Session::set(self::$placeIP, $IP);
+                    Session::set(self::$placeBrowser, $browser);
+                    return $user;
+                }
+            }
         }
-        
         // If $user doesn't exist in the register
         throw new LoginException('Unexisting user');
     }
@@ -127,25 +163,20 @@ class AuthenticationModel
         return self::$expirationOfCookies;
     }
 
-    private function cryptPassword($password)
+    private function createSalt()
     {
-        return crypt($password, self::$salt);
-    }
-
-/*    private function createSalt()
-    {
-        $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789!"#¤%&/()=?@£${[]}\+-*';
+        $lengthOfSalt = 8;
+        
+        $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789';
         $validCharsLength = strlen($validChars);
+        $salt = '_';
         
-        $randString = '';
-        
-        for ($i = 0; $i < self::$lengthOfPassword; $i += 1)
+        for ($i = 0; $i < $lengthOfSalt; $i += 1)
         {
             $index = mt_rand(0, $validCharsLength - 1);
-            
-            $randString .= substr($validChars, $index, 1);
+            $salt .= substr($validChars, $index, 1);
         }
         
-        return $randString;
-    } */
+        return $salt;
+    }
 }

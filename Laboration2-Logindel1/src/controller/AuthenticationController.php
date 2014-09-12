@@ -18,7 +18,7 @@ class AuthenticationController
 		$view = new AuthenticationView($model);
 
         $inputUsername = $view->getUsername();
-        $inputPassword = $view->getPassword();
+        $inputPassword = $view->getPassword(); 
 
         try
         {

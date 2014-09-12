@@ -36,13 +36,11 @@ class TempUser
     {
         $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789!"#¤%&/()=?@£${[]}\+-*';
         $validCharsLength = strlen($validChars);
-        
         $randString = '';
         
         for ($i = 0; $i < self::$lengthOfPassword; $i += 1)
         {
             $index = mt_rand(0, $validCharsLength - 1);
-            
             $randString .= substr($validChars, $index, 1);
         }
         
