@@ -1,93 +1,120 @@
 <?php
 
 /**
- * This class is doing the Login and Logout.
+ * This class handles the authentication.
  * 
  * @author Svante Arvedson
  */
 class AuthenticationController
 {
+    /**
+     * @var AuthenticationModel $model  An instance of AuthenticationModel
+     */
+    private $model;
+    
+    /**
+     * @var AuthenticationView $view  An instance of AuthenticationView
+     */
+    private $view;
+    
+    /**
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->model = new AuthenticationModel(); 
+        $this->view = new AuthenticationView($this->model);
+    }
+    
 	/**
-	 * Are doing the login.
+	 * Authenticate a user
+     * Redirect when done
 	 * 
+     * @throws InvalidUsernaeException  If provided username isn't valid
+     * @throws InvalidPasswordException If provided password isn't valid
+     * @throws LoginException   If user doesn't exist in register
+     * @throws Exception If a server error occurs
+     * 
 	 * @return void
 	 */
 	public function doLogin()
 	{
-		$model = new AuthenticationModel();	
-		$view = new AuthenticationView($model);
-
-        $inputUsername = $view->getUsername();
-        $inputPassword = $view->getPassword(); 
+        $inputUsername = $this->view->getUsername();
+        $inputPassword = $this->view->getPassword(); 
 
         try
         {
-            if ($view->userWantsToSaveCredentials())
+            if ($this->view->userWantsToSaveCredentials())
             {
-                $user = $model->loginUser($inputUsername, $inputPassword, true);
-                $view->saveCredentials($user->getUsername(), $user->getPassword());
-                $view->addSuccessMessage('Inloggning lyckades och vi kommer ihåg dig till nästa gång');   
+                $user = $this->model->loginUser($inputUsername, $inputPassword, true);
+                $this->view->saveCredentials($user->getUsername(), $user->getPassword());
+                $this->view->addSuccessMessage('Inloggning lyckades och vi kommer ihåg dig till nästa gång');   
             }
             else
             {
-                $model->loginUser($inputUsername, $inputPassword);
-                $view->addSuccessMessage('Inloggning lyckades');    
+                $this->model->loginUser($inputUsername, $inputPassword);
+                $this->view->addSuccessMessage('Inloggning lyckades');    
             }
         }
         catch (InvalidUsernameException $e)
         {
-            $view->addErrorMessage('Användarnamn saknas');
+            $this->view->addErrorMessage('Användarnamn saknas');
         }
         catch (InvalidPasswordException $e)
         {
-            $view->addErrorMessage('Lösenord saknas');
+            $this->view->addErrorMessage('Lösenord saknas');
         }
         catch (LoginException $e)
         {
-            $view->addErrorMessage('Felaktigt användarnamn och/eller lösenord');
+            $this->view->addErrorMessage('Felaktigt användarnamn och/eller lösenord');
         }
         catch (Exception $e)
         {
-            $view->addErrorMessage('Ett fel inträffade när du försökte logga in');
+            $this->view->addErrorMessage('Ett fel inträffade när du försökte logga in');
         }
 
-        $view->redirect($_SERVER['PHP_SELF']);
+        $this->view->redirect($_SERVER['PHP_SELF']);
 	}
 	
+    /**
+     * Authenticate a user woth saved credentials
+     * Redirect when done
+     * 
+     * @throws Exception If an error occurs
+     * 
+     * @return void
+     */
+    public function doLoginWithCredentials()
+    {
+        $savedCredentials = $this->view->getSavedCredentials();
+
+        try
+        {
+            /* $savedCredentials[0] == username
+             * $savedCredentials[1] == password */
+            $this->model->loginUserWithCredentials($savedCredentials[0], $savedCredentials[1]);
+            $this->view->addSuccessMessage('Inloggning lyckades via cookies');
+        }
+        catch (Exception $e)
+        {
+            $this->view->addErrorMessage('Felaktig information i cookies');
+            $this->view->removeCredentials();
+        }
+
+        $this->view->redirect($_SERVER['PHP_SELF']);
+    }
+    
 	/**
-	 * Are doing the logout.
+	 * Unauthenticate user
 	 * 
 	 * @return void
 	 */
 	public function doLogout()
 	{
-		$model = new AuthenticationModel();
-        $view = new AuthenticationView($model);
-        
-		$model->logoutUser();
-		$view->removeCredentials();
-        $view->addSuccessMessage('Du har nu loggat ut');
+		$this->model->logoutUser();
+		$this->view->removeCredentials();
+        $this->view->addSuccessMessage('Du har nu loggat ut');
 
-		$view->redirect($_SERVER['PHP_SELF']);
+		$this->view->redirect($_SERVER['PHP_SELF']);
 	}
-    
-    public function doLoginWithCredentials()
-    {
-        $model = new AuthenticationModel();   
-        $view = new AuthenticationView($model);
-        $savedCredentials = $view->getSavedCredentials();
-        
-        try
-        {
-            $model->loginUserWithCredentials($savedCredentials[0], $savedCredentials[1]);
-            $view->addSuccessMessage('Inloggning lyckades via cookies');
-        }
-        catch (Exception $e)
-        {
-            $view->addErrorMessage('Felaktig information i cookies');
-            $view->removeCredentials();
-        }
-
-        $view->redirect($_SERVER['PHP_SELF']);
-    }
 }

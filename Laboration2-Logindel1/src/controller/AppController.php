@@ -8,7 +8,7 @@
 class AppController
 {
     /**
-     * This function configure the application to run in swedish
+     * Configure the application to run in swedish
      * 
      * @return void
      */
@@ -26,13 +26,13 @@ class AppController
 	public function run()
 	{
 		$this->configureLocale();
-		Session::start();
+        session_start();
 
         $model = new AuthenticationModel();
         $view = new AuthenticationView($model);
         $controller = new AuthenticationController();
 
-		if (Request::isPostback())
+		if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		{
             if ($view->userPressedLogin())
             {

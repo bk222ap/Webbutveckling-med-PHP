@@ -1,28 +1,29 @@
 <?php
 
 /**
- * Represents the User of the application.
+ * Represents a User of the application.
  * 
  * @author Svante Arvedson
  */
 class User
 {
     /**
-     * @var string          The Users password
+     * @var string The Users password
      */
     private $password;
     
 	/**
-	 * @var string 			The users username
+	 * @var string The users username
 	 */
 	private $username;
 
 	/**
-	 * Constructor method for this class
-     * The user register is located in a file
-	 *
-	 * @throws Exception 		    If $username does not exist
 	 * @param string $inputUsername	The username belonging to the user
+     * 
+     * @throws InvalidUsernameException If $username isn't valid
+     * @throws InvalidPasswordException If $password isn't valid
+     * 
+     * @return void
 	 */
 	public function __construct($username, $password) 
 	{
@@ -40,9 +41,9 @@ class User
 	}
 	
     /**
-     * Returns the Users password
+     * Returns this->password
      * 
-     * @return string   The users password
+     * @return string   this->password
      */
     public function getPassword()
     {
@@ -50,22 +51,12 @@ class User
     }
     
 	/**
-	 * Returns the Users username
+	 * Returns the this->username
 	 * 
-	 * @return string 	The users username
+	 * @return string 	this->username
 	 */
 	public function getUsername()
 	{
 		return $this->username;
 	}
-    
-    public function getTempPassword()
-    {
-        return $this->tempPassword;
-    }
-    
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
 }

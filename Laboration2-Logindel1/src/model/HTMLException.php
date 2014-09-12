@@ -3,7 +3,7 @@
 /**
  * @author Svante Arvedson
  */
-class InvalidUsernameException extends Exception
+class HTMLException extends Exception
 {
     /**
      * @param string $message   Error message

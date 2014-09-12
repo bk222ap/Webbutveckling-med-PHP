@@ -1,43 +1,54 @@
 <?php
 
 /**
- * Model representing the Authentication module
+ * Model representing the authentication module
  * 
  * @author Svante Arvedson
  */
 class AuthenticationModel
 {
-    private static $expirationOfCookies = 300;
+    /**
+     * @var integer $expirationOfCookies    The valid length of a cookie in seconds
+     */
+    private static $expirationOfCookies = 60;
     
     /**
-     * $var $placeUser      The index for the user object
+     * @var string $placeBrowser    The session name for the browser information
      */
-	private static $placeUser = 'AuthenticationModel::User';
-    private static $placeIP = 'AuthenticationModel::IP';
     private static $placeBrowser = 'AuthenticationModel::Browser';
     
+    /**
+     * @var string $placeIP     The session name for the IP number information
+     */
+    private static $placeIP = 'AuthenticationModel::IP';
     
+    /**
+     * @var $placeUser      The session name for the user object
+     */
+	private static $placeUser = 'AuthenticationModel::User';
+    
+    /**
+     * @var SessionService $sessionService  An instance of SessionService class
+     */
+    private $sessionService;
+    
+    /**
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->sessionService = new SessionService();
+    }    
 
     /**
-     * Returns TRUE if the user is authenticated
+     * Getter for self::$expirationOfCookies
      * 
-     * @return boolean  TRUE if the user is authenticated
+     * @return integer self::$expirationOfCookies
      */
-	public function isUserAuthenticated()
-	{
-	    $IP = $_SERVER['REMOTE_ADDR'];
-        $browser = $_SERVER['HTTP_USER_AGENT'];
-        
-        if (Session::varIsSet(self::$placeUser))
-        {
-            if (Session::get(self::$placeIP) === $IP &&
-                Session::get(self::$placeBrowser) === $browser)
-                {
-                    return true;
-                }
-        }
-        return false;
-	}
+    public function getExpirationOfCookies()
+    {
+        return self::$expirationOfCookies;
+    }
 
     /**
      * Return the User representing the authenticated user
@@ -46,13 +57,42 @@ class AuthenticationModel
      */
     public function getUser()
     {
-        return Session::get(self::$placeUser);
+        return $this->sessionService->load(self::$placeUser);
     }
 	
     /**
+     * Returns TRUE if the user is authenticated
+     * 
+     * @return boolean  TRUE if the user is authenticated
+     */
+    public function isUserAuthenticated()
+    {
+        $IP = $_SERVER['REMOTE_ADDR'];
+        $browser = $_SERVER['HTTP_USER_AGENT'];
+        
+        if ($this->sessionService->issetVar(self::$placeUser))
+        {
+            if ($this->sessionService->load(self::$placeIP) === $IP &&
+                $this->sessionService->load(self::$placeBrowser) === $browser)
+                {
+                    return true;
+                }
+        }
+        return false;
+    }
+    
+    /**
      * Authenticates the user
      * 
-     * @param User $user    The user to be authenticated
+     * @param string $username  Users username
+     * @param string $password  Users password
+     * @param boolean $saveCredentials  If user wants to save her credentials
+     * 
+     * @throws InvalidUsernameException If the provided username isn't valid
+     * @throws InvalidPasswordException If the provided password isn't valid
+     * @throws LoginException   If user doesn't exist in the register
+     * 
+     * @return User The authenicated user
      */
 	public function loginUser($username, $password, $saveCredentials = false)
 	{
@@ -90,9 +130,9 @@ class AuthenticationModel
                     file_put_contents('files/tempUsers', $userString, FILE_APPEND);
                 }
                 
-                Session::set(self::$placeUser, $user);
-                Session::set(self::$placeIP, $IP);
-                Session::set(self::$placeBrowser, $browser);
+                $this->sessionService->save(self::$placeUser, $user);
+                $this->sessionService->save(self::$placeIP, $IP);
+                $this->sessionService->save(self::$placeBrowser, $browser);
                 return $user;
             }
         }
@@ -102,17 +142,16 @@ class AuthenticationModel
 	}
 	
     /**
-     * Unauthenticate the user
+     * Authenticates an user with saved credentials
      * 
-     * @return void
+     * @param string $username  Users username
+     * @param string $password  Users password
+     * 
+     * @throws Exception    If provided username or password isn't valid
+     * @throws LoginException If user doesn't exist in the register
+     * 
+     * @return User The authenticated user
      */
-	public function logoutUser()
-	{
-		Session::unsetVar(self::$placeUser);
-        Session::unsetVar(self::$placeIP);
-        Session::unsetVar(self::$placeBrowser);
-	}
-    
     public function loginUserWithCredentials($username, $password)
     {
         $timestamp = time();
@@ -143,26 +182,36 @@ class AuthenticationModel
             if ($timestamp <= ($uElements[3] + self::$expirationOfCookies) && 
                 $uElements[4] == $IP && 
                 $uElements[5] == $browser && 
-                $user->getUsername() == $uElements[0])
+                $user->getUsername() == $uElements[0] &&
+                crypt($user->getPassword(), $uElements[2]) == $uElements[1])
             {
-                if (crypt($user->getPassword(), $uElements[2]) === $uElements[1])
-                {
-                    Session::set(self::$placeUser, $user);
-                    Session::set(self::$placeIP, $IP);
-                    Session::set(self::$placeBrowser, $browser);
-                    return $user;
-                }
+                $this->sessionService->save(self::$placeUser, $user);
+                $this->sessionService->save(self::$placeIP, $IP);
+                $this->sessionService->save(self::$placeBrowser, $browser);
+                return $user;
             }
         }
         // If $user doesn't exist in the register
         throw new LoginException('Unexisting user');
     }
     
-    public function getExpirationOfCookies()
-    {
-        return self::$expirationOfCookies;
-    }
+    /**
+     * Unauthenticate the user
+     * 
+     * @return void
+     */
+	public function logoutUser()
+	{
+		$this->sessionService->remove(self::$placeUser);
+        $this->sessionService->remove(self::$placeIP);
+        $this->sessionService->remove(self::$placeBrowser);
+	}
 
+    /**
+     * Creates salt for cryptation of password
+     * 
+     * @return string   Salt for cryptation of password
+     */
     private function createSalt()
     {
         $lengthOfSalt = 8;

@@ -1,38 +1,87 @@
 <?php
 
+/**
+ * Represents a temporary user of the application
+ * 
+ * @author Svante Arvedson
+ */
 class TempUser
 {
+    /**
+     * @var integer $lengthOfPassword   The length of a temporary password
+     */
     private static $lengthOfPassword = 12;
     
+    /**
+     * @var string $username    Users username
+     */
     private $username;
-    private $tempPassword;
+    
+    /**
+     * @var string $password    Users password
+     */
+    private $password;
+    
+    /**
+     * @var string $timestamp   Time when the instance was created
+     */
     private $timestamp;
     
+    /**
+     * @param string $username  The users username
+     * 
+     * @throws InvalidUsernameException If provided username isn't valid
+     * 
+     * @return void
+     */
     public function __construct($username)
     {
-        $tempPassword = $this->generateRandomString();
+        if (!is_string($username) || $username == '')
+        {
+            throw new InvalidUsernameException('Unvalid username.');
+        }
         
         $this->username = $username;
-        $this->tempPassword = base64_encode($tempPassword);
+        $this->password = base64_encode($this->generatePassword());
         $this->timestamp = time();
     }
     
+    /**
+     * Returns $this->username
+     * 
+     * @return string $this->username
+     */
     public function getUsername()
     {
         return $this->username;
     }
     
+    /**
+     * Returns $this->password
+     * 
+     * @return string $this->password
+     */
     public function getPassword()
     {
-        return $this->tempPassword;
+        return $this->password;
     }
     
+    /**
+     * Returns $this->timestamp
+     * 
+     * @return integer $this->timestamp
+     */
     public function getTimestamp()
     {
         return $this->timestamp;
     }
     
-    private function generateRandomString()
+    /**
+     * Generates a random password
+     * 
+     * @return string A random password
+     */
+    private function generatePassword()
     {
         $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789!"#¤%&/()=?@£${[]}\+-*';
         $validCharsLength = strlen($validChars);

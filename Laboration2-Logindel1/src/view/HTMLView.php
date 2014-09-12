@@ -1,37 +1,37 @@
 <?php
 
 /**
- * This is the base class for all views in the application
+ * Base view class for the application
  * 
  * @author Svante Arvedson
  */
 class HTMLview
 {
 	/**
-	 * @var string	The content in the body tag
+	 * @var string	HTML body
 	 */
 	private $body;
 	
 	/**
-	 * @var string	The content in the title tag
+	 * @var string	HTML title
 	 */
 	private $title;
 	
 	/**
 	 * This function echos the HTML code.
 	 *
-	 * @throws Exception	Throws an exception if $this->title or $this->body isn't set. 
+	 * @throws HTMLException	If $this->title or $this->body isn't set. 
 	 * @return void
 	 */
 	public function echoHTML()
 	{
 		if ($this->title == null)
 		{
-			throw new Exception('$title must not be null.');
+			throw new HTMLException('$title must not be null.');
 		}
 		if ($this->body == null)
 		{
-			throw new Exception('$body must not be null.');
+			throw new HTMLException('$body must not be null.');
 		}
 		
 		$HTML = '
