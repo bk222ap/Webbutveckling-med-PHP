@@ -25,7 +25,8 @@ class Request
 	 */
 	public static function getGET($index)
 	{
-		return $_GET[$index];
+        return $_GET[$index];    
+
 	}
 	
 	/**
@@ -36,7 +37,7 @@ class Request
 	 */
 	public static function getPOST($index)
 	{
-		return $_POST[$index];
+	    return $_POST[$index];    
 	}
 	
 	/**
@@ -49,4 +50,9 @@ class Request
 	{
 		header('Location: ' . $address);
 	}
+    
+    public static function isPOSTset($index)
+    {
+        return isset($_POST[$index]);
+    }
 }

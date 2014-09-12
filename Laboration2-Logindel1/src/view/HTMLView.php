@@ -8,11 +8,6 @@
 class HTMLview
 {
 	/**
-	 * @var string	The name for the action parameter in the url
-	 */
-	protected static $ActionParameterIndex = 'action';
-	
-	/**
 	 * @var string	The content in the body tag
 	 */
 	private $body;
@@ -53,16 +48,6 @@ class HTMLview
 			</html>';
 		
 		echo $HTML;
-	}
-	
-	/**
-	 * This method return the value of the GET parameter "action"
-	 * 
-	 * @return string	The GET parameter "action"
-	 */
-	public function getAction()
-	{
-		return Request::getGET(self::$ActionParameterIndex);
 	}
 	
     /**

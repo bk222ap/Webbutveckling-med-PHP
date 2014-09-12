@@ -28,37 +28,32 @@ class AppController
 		$this->configureLocale();
 		Session::start();
 
+        $model = new AuthenticationModel();
+        $view = new AuthenticationView($model);
+        $controller = new AuthenticationController();
+
 		if (Request::isPostback())
 		{
-			$view = new HTMLView();
-
-			switch ($view->getAction())
-			{
-				case Strings::$ActionParameterValueLogin:
-					$authenticationController = new AuthenticationController();
-					$authenticationController->doLogin();
-					break;
-				case Strings::$ActionParameterValueLogout:
-					$authenticationController = new AuthenticationController();
-					$authenticationController->doLogout();
-					break;
-			}
+            if ($view->userPressedLogin())
+            {
+                $controller->doLogin();
+            }
+            else if ($view->userPressedLogout())
+            {
+                $controller->doLogout();
+            }
 		}
 		else
 		{
-			$authenticationModel = new AuthenticationModel();
-			
-			if ($authenticationModel->isUserAuthenticated())
-			{
-				$view = new AuthenticationView($authenticationModel);
-			}
-			else
-			{
-				$view = new AuthenticationView($authenticationModel);
-			}
-
-			$view->createHTML();
-			$view->echoHTML();
+            if ($model->isUserAuthenticated() || !$view->credentialsIsSaved())
+            {
+                $view->createHTML();
+                $view->echoHTML();
+            }
+            else
+            {
+                $controller->doLoginWithCredentials();
+            }
 		}
 	}
 }

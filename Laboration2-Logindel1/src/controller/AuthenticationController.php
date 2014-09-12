@@ -14,43 +14,43 @@ class AuthenticationController
 	 */
 	public function doLogin()
 	{
-		$authenticationModel = new AuthenticationModel();	
-		$view = new AuthenticationView($authenticationModel);
+		$model = new AuthenticationModel();	
+		$view = new AuthenticationView($model);
 
-        if ($view->getUsername() == '' || $view->getPassword() == ''){
-            if ($view->getUsername() == '')
+        $inputUsername = $view->getUsername();
+        $inputPassword = $view->getPassword();
+
+        try
+        {
+            if ($view->userWantsToSaveCredentials())
             {
-                $view->addErrorMessage('Användarnamn saknas');
+                $user = $model->loginUser($inputUsername, $inputPassword, true);
+                $view->saveCredentials($user->getUsername(), $user->getPassword());
+                $view->addSuccessMessage('Inloggning lyckades och vi kommer ihåg dig till nästa gång');   
             }
             else
             {
-                $view->addErrorMessage('Lösenord saknas');
+                $model->loginUser($inputUsername, $inputPassword);
+                $view->addSuccessMessage('Inloggning lyckades');    
             }
         }
-        else
+        catch (InvalidUsernameException $e)
         {
-            try
-            {
-                // Throws Exception if $inputUsername doesn't exist
-                $user = new User($view->getUsername());
-                
-                if (Helper::cryptPassword($view->getPassword()) != $user->getPassword())
-                {
-                    $view->addErrorMessage('Felaktigt användarnamn och/eller lösenord');
-                }
-                else
-                {
-                    // Successful login
-                    $view->addSuccessMessage('Inloggning lyckades');
-                    $authenticationModel->loginUser($user);
-                }
-            }
-            catch (Exception $e)
-            {
-                $view->addErrorMessage('Felaktigt användarnamn och/eller lösenord');
-            }
+            $view->addErrorMessage('Användarnamn saknas');
         }
-        
+        catch (InvalidPasswordException $e)
+        {
+            $view->addErrorMessage('Lösenord saknas');
+        }
+        catch (LoginException $e)
+        {
+            $view->addErrorMessage('Felaktigt användarnamn och/eller lösenord');
+        }
+        catch (Exception $e)
+        {
+            $view->addErrorMessage('Ett fel inträffade när du försökte logga in');
+        }
+
         $view->redirect($_SERVER['PHP_SELF']);
 	}
 	
@@ -61,12 +61,33 @@ class AuthenticationController
 	 */
 	public function doLogout()
 	{
-		$authenticationModel = new AuthenticationModel();
-		$authenticationModel->logoutUser();
-
-        $view = new AuthenticationView($authenticationModel);
+		$model = new AuthenticationModel();
+        $view = new AuthenticationView($model);
+        
+		$model->logoutUser();
+		$view->removeCredentials();
         $view->addSuccessMessage('Du har nu loggat ut');
 
 		$view->redirect($_SERVER['PHP_SELF']);
 	}
+    
+    public function doLoginWithCredentials()
+    {
+        $model = new AuthenticationModel();   
+        $view = new AuthenticationView($model);
+        $savedCredentials = $view->getSavedCredentials();
+        
+        try
+        {
+            $model->loginUserWithCredentials($savedCredentials[0], $savedCredentials[1]);
+            $view->addSuccessMessage('Inloggning lyckades via cookies');
+        }
+        catch (Exception $e)
+        {
+            $view->addErrorMessage('Felaktig information i cookies');
+            $view->removeCredentials();
+        }
+
+        $view->redirect($_SERVER['PHP_SELF']);
+    }
 }

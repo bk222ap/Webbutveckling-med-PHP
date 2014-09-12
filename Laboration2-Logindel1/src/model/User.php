@@ -18,21 +18,25 @@ class User
 	private $username;
 
 	/**
-	 * Constructor method for this class 
+	 * Constructor method for this class
+     * The user register is located in a file
 	 *
-	 * @throws Exception 		If $username does not exist
-	 * @param string $username	The username belonging to the user
+	 * @throws Exception 		    If $username does not exist
+	 * @param string $inputUsername	The username belonging to the user
 	 */
-	public function __construct($username) 
+	public function __construct($username, $password) 
 	{
-		// For the moment this is not data from a database.
-		if ($username != "Admin") 
-		{
-			throw new Exception('Username does not exist.');
-		}
-		
-		$this->username = $username;
-		$this->password = Helper::cryptPassword('Password'); // This should also be fetched from the database.
+	    if (!is_string($username) || $username == '')
+	    {
+	        throw new InvalidUsernameException('Unvalid username.');
+	    }
+        if (!is_string($password) || $password == '')
+        {
+            throw new InvalidPasswordException('Unvalid password.');
+        }
+        
+	    $this->username = $username;
+        $this->password = $password;
 	}
 	
     /**
@@ -54,4 +58,14 @@ class User
 	{
 		return $this->username;
 	}
+    
+    public function getTempPassword()
+    {
+        return $this->tempPassword;
+    }
+    
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
 }

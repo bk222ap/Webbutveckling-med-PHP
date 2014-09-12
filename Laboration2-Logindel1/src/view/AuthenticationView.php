@@ -2,26 +2,30 @@
 
 class AuthenticationView extends HTMLView
 {
-    private $authenticationModel;
+    private $model;
     private $cookie;
     private static $placeErrorMessage = 'AuthenticationView::ErrorMessage';
     private static $placeSuccessMessage = 'AuthenticationView::SuccessMessage';
     private static $placeLastUsernameInput = 'AuthenticationView::LastUsernameInput';
-    //private static $ActionParameterIndex = 'action';
+    private static $placeSavedUsername = 'AuthenticationView::SavedUsername';
+    private static $placeSavedPassword = 'AuthenticationView::SavedPassword';
     private static $NameUsername = 'username';
     private static $NamePassword = 'password';
     private static $NameSaveCredentials = 'saveCredentials';
     private static $NameLoginButton = 'login';
     private static $NameLogoutButton = 'logout';
     
-    public function __construct(AuthenticationModel $authenticationModel)
+    public function __construct(AuthenticationModel $model)
     {
-        $this->authenticationModel = $authenticationModel;
+        $this->model = $model;
         $this->cookie = new Cookie();
         
         if (Request::isPostback())
         {
-            $this->addLastUsernameInput($this->getUsername());
+            if ($this->userPressedLogin())
+            {
+                $this->addLastUsernameInput($this->getUsername());
+            }
         }
     }
     
@@ -34,7 +38,7 @@ class AuthenticationView extends HTMLView
         $body = '
             <div id="main">
                 <h1>Laboration 2 - ba222ec</h1>
-                <h2>' . $this->authenticationModel->getUser()->getUsername() . ' inloggad</h2>';
+                <h2>' . $this->model->getUser()->getUsername() . ' är inloggad</h2>';
         
         if ($successMessage != '')
         {
@@ -42,7 +46,7 @@ class AuthenticationView extends HTMLView
         }
                 
         $body .='
-                <form method="POST" action="?' . self::$ActionParameterIndex . '=' . Strings::$ActionParameterValueLogout . '">
+                <form method="POST" action="">
                     <input type="submit" name="' . self::$NameLogoutButton . '" value="Logga ut" />
                 </form>' . "\n";
                 
@@ -54,7 +58,7 @@ class AuthenticationView extends HTMLView
         $errorMessage = $this->getErrorMessage();
         $successMessage = $this->getSuccessMessage();
         $lastUsernameInput = $this->getLastUsernameInput();
-
+        
         $body = '
             <div id="main">
                 <h1>Laboration 2 - ba222ec</h1>
@@ -66,7 +70,7 @@ class AuthenticationView extends HTMLView
         }
                     
         $body .='
-                <form method="POST" action="?' . self::$ActionParameterIndex . '=' . Strings::$ActionParameterValueLogin . '">
+                <form method="POST" action="">
                     <fieldset>
                         <legend>Logga in:</legend>' . "\n";
 
@@ -105,9 +109,9 @@ class AuthenticationView extends HTMLView
         $title = '';
         $date = ucfirst(utf8_encode(strftime('%A den %#d %B ' . utf8_decode('år') . ' %Y. Klockan ' . utf8_decode('är') . ' [%H:%M:%S].')));
         
-        if ($this->authenticationModel->isUserAuthenticated())
+        if ($this->model->isUserAuthenticated())
         {
-            $title .= $this->authenticationModel->getUser()->getUsername() . ' inloggad';
+            $title .= $this->model->getUser()->getUsername() . ' är inloggad';
             $body .= $this->createAuthenticatedBody();
         }
         else
@@ -143,6 +147,41 @@ class AuthenticationView extends HTMLView
         $this->cookie->saveCookie(self::$placeSuccessMessage, $message);
     }
     
+    public function saveCredentials($username, $password)
+    {
+        $this->cookie->saveCookie(self::$placeSavedUsername, $username, time()+$this->model->getExpirationOfCookies());
+        $this->cookie->saveCookie(self::$placeSavedPassword, $password, time()+$this->model->getExpirationOfCookies());
+    }
+    
+    public function userWantsToSaveCredentials()
+    {
+        return Request::isPOSTset(self::$NameSaveCredentials);
+    }
+
+    public function userPressedLogin()
+    {
+        return Request::isPOSTset(self::$NameLoginButton);
+    }
+
+    public function userPressedLogout()
+    {
+        return Request::isPOSTset(self::$NameLogoutButton);
+    }
+
+    public function removeCredentials()
+    {
+        $this->cookie->unsetCookie(self::$placeSavedUsername);
+        $this->cookie->unsetCookie(self::$placeSavedPassword);
+    }
+
+    public function getSavedCredentials()
+    {
+        $username = $this->cookie->loadCookie(self::$placeSavedUsername);
+        $password = $this->cookie->loadCookie(self::$placeSavedPassword);
+        
+        return array($username, $password);
+    }
+
     private function addLastUsernameInput($lastInput)
     {
         $this->cookie->saveCookie(self::$placeLastUsernameInput, $lastInput);
@@ -161,5 +200,10 @@ class AuthenticationView extends HTMLView
     private function getSuccessMessage()
     {
         return $this->cookie->loadOnceCookie(self::$placeSuccessMessage);
+    }
+
+    public function credentialsIsSaved()
+    {
+        return $this->cookie->cookieIsset(self::$placeSavedUsername) && $this->cookie->cookieIsset(self::$placeSavedPassword);
     }
 }
