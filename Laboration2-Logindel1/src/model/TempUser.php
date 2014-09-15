@@ -10,7 +10,7 @@ class TempUser
     /**
      * @var integer $lengthOfPassword   The length of a temporary password
      */
-    private static $lengthOfPassword = 12;
+    public static $lengthOfUncryptPass = 12;
     
     /**
      * @var string $username    Users username
@@ -23,27 +23,67 @@ class TempUser
     private $password;
     
     /**
-     * @var string $timestamp   Time when the instance was created
+     * @var string $salt    Salt for crypting the password
      */
-    private $timestamp;
+    private $salt;
+    
+    /**
+     * @var string $endTimestamp   Time when TempUser stops being valid
+     */
+    private $expirationTime;
+    
+    /**
+     * @var string $IP  The temporary users IP address
+     */
+    private $IP;
+     
+     /**
+      * @var string $browser    The temporary users IP address   
+      */
+    private $browser; 
     
     /**
      * @param string $username  The users username
      * 
      * @throws InvalidUsernameException If provided username isn't valid
+     * @throws InvalidPasswordException If $password isn't valid
+     * @throws InvalidArgumentException If parameters isn't valid
      * 
      * @return void
      */
-    public function __construct($username)
+    public function __construct($username, $password, $salt, $expirationTime, $IP, $browser)
     {
         if (!is_string($username) || $username == '')
         {
-            throw new InvalidUsernameException('Unvalid username.');
+            throw new InvalidUsernameException('Unvalid username');
+        }
+        if (!is_string($password) || $password == '')
+        {
+            throw new InvalidPasswordException('Unvalid password');
+        }
+        if (!is_string($salt) || $salt == '')
+        {
+            throw new InvalidArgumentException('Unvalid salt');
+        }
+        if ($expirationTime <= time())
+        {
+            throw new InvalidArgumentException('Unvalid timestamp');
+        }
+        if (!is_string($IP) || $IP == '')
+        {
+            throw new InvalidArgumentException('Unvalid IP-address');
+        }
+        if (!is_string($browser) || $browser == '')
+        {
+            throw new InvalidArgumentException('Unvalid browser information');
         }
         
         $this->username = $username;
-        $this->password = base64_encode($this->generatePassword());
-        $this->timestamp = time();
+        $this->password = $password;
+        $this->salt = $salt;
+        $this->expirationTime = $expirationTime;
+        $this->IP = $IP;
+        $this->browser = $browser;
     }
     
     /**
@@ -65,34 +105,44 @@ class TempUser
     {
         return $this->password;
     }
-    
+
     /**
-     * Returns $this->timestamp
+     * Returns $this->salt
      * 
-     * @return integer $this->timestamp
+     * @return string $this->salt
      */
-    public function getTimestamp()
+    public function getSalt()
     {
-        return $this->timestamp;
+        return $this->salt;
     }
     
     /**
-     * Generates a random password
+     * Returns $this->expirationTime
      * 
-     * @return string A random password
+     * @return integer $this->expirationTime
      */
-    private function generatePassword()
+    public function getExpirationTime()
     {
-        $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789!"#¤%&/()=?@£${[]}\+-*';
-        $validCharsLength = strlen($validChars);
-        $randString = '';
-        
-        for ($i = 0; $i < self::$lengthOfPassword; $i += 1)
-        {
-            $index = mt_rand(0, $validCharsLength - 1);
-            $randString .= substr($validChars, $index, 1);
-        }
-        
-        return $randString;
+        return $this->expirationTime;
     }
+    
+    /**
+     * Returns $this->IP
+     * 
+     * @return string $this->IP
+     */
+    public function getIP()
+    {
+        return $this->IP;
+    }
+    
+    /**
+     * Returns $this->browser
+     * 
+     * @return string $this->browser
+     */
+    public function getBrowser()
+    {
+        return $this->browser;
+    }   
 }

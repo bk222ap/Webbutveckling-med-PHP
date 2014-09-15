@@ -10,7 +10,12 @@ class AuthenticationModel
     /**
      * @var integer $expirationOfCookies    The valid length of a cookie in seconds
      */
-    private static $expirationOfCookies = 60;
+    private static $expirationOfTempUser = 60;
+    
+    /**
+     * @var string $lengthOfSalt
+     */
+    private static $lengthOfSalt = 8;
     
     /**
      * @var string $placeBrowser    The session name for the browser information
@@ -33,21 +38,38 @@ class AuthenticationModel
     private $sessionService;
     
     /**
+     * @var string $tempPassword
+     */
+    private $tempPassUncrypt;
+    
+    /**
+     * @var DALUser $DALUser
+     */
+    private $DALUser;
+    
+    /**
+     * @var DALTempUser
+     */
+    private $DALTempUser;
+    
+    /**
      * @return void
      */
     public function __construct()
     {
         $this->sessionService = new SessionService();
+        $this->DALTempUser = new DALTempUser();
+        $this->DALUser = new DALUser();
     }    
 
     /**
-     * Getter for self::$expirationOfCookies
+     * Getter for self::$expirationOfTempUser
      * 
-     * @return integer self::$expirationOfCookies
+     * @return integer self::$expirationOfTempUser
      */
-    public function getExpirationOfCookies()
+    public function getExpirationOfTempUser()
     {
-        return self::$expirationOfCookies;
+        return self::$expirationOfTempUser;
     }
 
     /**
@@ -61,19 +83,27 @@ class AuthenticationModel
     }
 	
     /**
+     * Return $this->tempPassword
+     * 
+     * @return string $this->tempPassword
+     */
+    public function getTempPassword()
+    {
+        return $this->tempPassword;
+    }
+    
+    /**
      * Returns TRUE if the user is authenticated
      * 
      * @return boolean  TRUE if the user is authenticated
      */
     public function isUserAuthenticated($IP, $browser)
     {
-        if ($this->sessionService->issetVar(self::$placeUser))
+        if ($this->sessionService->issetVar(self::$placeUser) && 
+            $this->sessionService->load(self::$placeIP) == $IP && 
+            $this->sessionService->load(self::$placeBrowser) === $browser)
         {
-            if ($this->sessionService->load(self::$placeIP) === $IP &&
-                $this->sessionService->load(self::$placeBrowser) === $browser)
-                {
-                    return true;
-                }
+            return true;
         }
         return false;
     }
@@ -92,48 +122,48 @@ class AuthenticationModel
      * @return User The authenicated user
      */
 	public function loginUser($username, $password, $IP, $browser, $saveCredentials = false)
-	{   
-	    try
-	    {
-	        $user = new User($username, $password);
-	    }
-        catch (InvalidUsernameException $e)
+	{
+	    if (!is_string($username) || $username == '')
         {
-            throw $e;
+            throw new InvalidUsernameException('Unvalid username');
         }
-        catch (InvalidPasswordException $e)
+        if (!is_string($password) || $password == '')
         {
-            throw $e;
+            throw new InvalidPasswordException('Unvalid password');
         }
         
-	    $users = file('files/Users', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        foreach ($users as $u)
+        try
         {
-            $uElements = explode(',', $u, 3);
-            // If $user exists in the register
-            if ($user->getUsername() === $uElements[0] && 
-                crypt($user->getPassword(), $uElements[2]) === $uElements[1])
+	        $user = $this->DALUser->getUserByUsername($username);
+            
+            if ($user->getPassword() == crypt($password, $user->getSalt()))
             {
-                if ($saveCredentials)
+               if ($saveCredentials)
                 {
-                    $user = new TempUser($user->getUsername());
-                    $salt = $this->createSalt();
-                    $userString = $user->getUsername().",".crypt($user->getPassword(), $salt).",".$salt.",".time().",".$IP.",".$browser."\n";
-                    
-                    // Save temp login in a file
-                    file_put_contents('files/tempUsers', $userString, FILE_APPEND);
+                    $this->tempPassword = $this->createPassword();
+                    $tempSalt = $this->createSalt();
+                    $tempCryptPass = crypt($this->tempPassword, $tempSalt);
+                    $expirationTime = time() + self::$expirationOfTempUser;
+
+                    $tempUser = new TempUser($username, $tempCryptPass, $tempSalt, $expirationTime, $IP, $browser);
+                    $this->DALTempUser->saveTempUser($tempUser);
                 }
-                
+                               
                 $this->sessionService->save(self::$placeUser, $user);
                 $this->sessionService->save(self::$placeIP, $IP);
                 $this->sessionService->save(self::$placeBrowser, $browser);
                 return $user;
             }
+            else
+            {
+                throw new LoginException('Unexisting user');
+            }
         }
-        
-        // If $user doesn't exist in the register
-        throw new LoginException('Unexisting user');
-	}
+        catch(Exception $e)
+        {
+            throw new LoginException('Error during login');
+        }
+    }
 	
     /**
      * Authenticates an user with saved credentials
@@ -148,43 +178,29 @@ class AuthenticationModel
      */
     public function loginUserWithCredentials($username, $password, $IP, $browser)
     {
-        $timestamp = time();
-
         try
         {
-            $user = new User($username, $password);
-        }
-        catch (Exception $e)
-        {
-            throw $e;
-        }
-        
-        $users = file('files/tempUsers', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $tempUser = $this->DALTempUser->getTempUserByUsername($username);
 
-        foreach ($users as $u)
-        {
-            /* $uElements[0] == username
-             * $uElements[1] == password
-             * $uElements[2] == salt
-             * $uElements[3] == timestamp
-             * $uElements[4] == IP
-             * $uElements[5] == browser */
-            $uElements = explode(',', $u, 6);
-
-            if ($timestamp <= ($uElements[3] + self::$expirationOfCookies) && 
-                $uElements[4] == $IP && 
-                $uElements[5] == $browser && 
-                $user->getUsername() == $uElements[0] &&
-                crypt($user->getPassword(), $uElements[2]) == $uElements[1])
+            if ($tempUser->getPassword() === crypt($password, $tempUser->getSalt()) &&
+                $IP == $tempUser->getIP() &&
+                $browser == $tempUser->getBrowser())
             {
+                $user = $this->DALUser->getUserByUsername($username);
                 $this->sessionService->save(self::$placeUser, $user);
                 $this->sessionService->save(self::$placeIP, $IP);
                 $this->sessionService->save(self::$placeBrowser, $browser);
                 return $user;
             }
+            else
+            {
+                throw new LoginException('Unexisting user');
+            }
         }
-        // If $user doesn't exist in the register
-        throw new LoginException('Unexisting user');
+        catch (Exception $e)
+        {
+            throw new LoginException('Unexisting user');
+        }
     }
     
     /**
@@ -206,18 +222,46 @@ class AuthenticationModel
      */
     private function createSalt()
     {
-        $lengthOfSalt = 8;
+        return '_' . $this->generateRandomString(self::$lengthOfSalt, false);
+    }
+
+    /**
+     * Generates a random password
+     * 
+     * @return string A random password
+     */
+    private function createPassword()
+    {
+        return base64_encode($this->generateRandomString(TempUser::$lengthOfUncryptPass));
+    }
+    
+    /**
+     * Generate a string with random characters
+     * 
+     * @return string   Ranom string
+     */
+    private function generateRandomString($lengthOfString, $allChars = true)
+    {
+        $validChars;
         
-        $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789';
-        $validCharsLength = strlen($validChars);
-        $salt = '_';
-        
-        for ($i = 0; $i < $lengthOfSalt; $i += 1)
+        if ($allChars)
         {
-            $index = mt_rand(0, $validCharsLength - 1);
-            $salt .= substr($validChars, $index, 1);
+            $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789!"#¤%&/()=?@£${[]}\+-*';
+        }
+        else
+        {
+            $validChars = 'abcdefghijklmnopqrstuvxyABCDEFGHIJKLMNOPQRSTUVXY123456789';    
         }
         
-        return $salt;
+        $validCharsLength = strlen($validChars);
+        $randString = '';
+        
+        for ($i = 0; $i < $lengthOfString; $i += 1)
+        {
+            $index = mt_rand(0, $validCharsLength - 1);
+            $randString .= substr($validChars, $index, 1);
+        }
+        
+        return $randString;
     }
 }

@@ -199,8 +199,8 @@ class AuthenticationView extends HTMLView
      */
     public function saveCredentials($username, $password)
     {
-        $this->cookieService->saveCookie(self::$placeSavedUsername, $username, time()+$this->model->getExpirationOfCookies());
-        $this->cookieService->saveCookie(self::$placeSavedPassword, $password, time()+$this->model->getExpirationOfCookies());
+        $this->cookieService->saveCookie(self::$placeSavedUsername, $username, time()+$this->model->getExpirationOfTempUser());
+        $this->cookieService->saveCookie(self::$placeSavedPassword, $password, time()+$this->model->getExpirationOfTempUser());
     }
     
     /**

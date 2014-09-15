@@ -48,8 +48,8 @@ class AuthenticationController
         {
             if ($this->view->userWantsToSaveCredentials())
             {
-                $user = $this->model->loginUser($inputUsername, $inputPassword, $inputIP, $inputBrowser, true);
-                $this->view->saveCredentials($user->getUsername(), $user->getPassword());
+                $this->model->loginUser($inputUsername, $inputPassword, $inputIP, $inputBrowser, true);
+                $this->view->saveCredentials($this->model->getUser()->getUsername(), $this->model->getTempPassword());
                 $this->view->addSuccessMessage('Inloggning lyckades och vi kommer ihåg dig till nästa gång');   
             }
             else
