@@ -45,7 +45,7 @@ class AppController
 		}
 		else
 		{
-            if ($model->isUserAuthenticated() || !$view->credentialsIsSaved())
+            if ($model->isUserAuthenticated($view->getIP(), $view->getBrowserInfo()) || !$view->credentialsIsSaved())
             {
                 $view->createHTML();
                 $view->echoHTML();

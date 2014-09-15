@@ -119,7 +119,7 @@ class AuthenticationView extends HTMLView
         $title = '';
         $date = ucfirst(utf8_encode(strftime('%A den %#d %B ' . utf8_decode('år') . ' %Y. Klockan ' . utf8_decode('är') . ' [%H:%M:%S].')));
         
-        if ($this->model->isUserAuthenticated())
+        if ($this->model->isUserAuthenticated($this->getIP(), $this->getBrowserInfo()))
         {
             $title .= $this->model->getUser()->getUsername() . ' är inloggad';
             $body .= $this->createAuthenticatedBody();

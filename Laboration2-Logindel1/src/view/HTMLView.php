@@ -51,6 +51,26 @@ class HTMLview
 	}
 	
     /**
+     * Return IP address for the request
+     * 
+     * @return string   IP address
+     */
+    public function getIP()
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+    
+    /**
+     * Return info about used browser
+     * 
+     * @return string   info about used browser
+     */
+    public function getBrowserInfo()
+    {
+        return $_SERVER['HTTP_USER_AGENT'];
+    }
+    
+    /**
      * Redirects to a new page
      * 
      * @return void

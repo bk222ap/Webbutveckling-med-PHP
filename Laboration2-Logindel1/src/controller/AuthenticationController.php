@@ -41,18 +41,20 @@ class AuthenticationController
 	{
         $inputUsername = $this->view->getUsername();
         $inputPassword = $this->view->getPassword(); 
+        $inputIP = $this->view->getIP();
+        $inputBrowser = $this->view->getBrowserInfo();
 
         try
         {
             if ($this->view->userWantsToSaveCredentials())
             {
-                $user = $this->model->loginUser($inputUsername, $inputPassword, true);
+                $user = $this->model->loginUser($inputUsername, $inputPassword, $inputIP, $inputBrowser, true);
                 $this->view->saveCredentials($user->getUsername(), $user->getPassword());
                 $this->view->addSuccessMessage('Inloggning lyckades och vi kommer ihåg dig till nästa gång');   
             }
             else
             {
-                $this->model->loginUser($inputUsername, $inputPassword);
+                $this->model->loginUser($inputUsername, $inputPassword, $inputIP, $inputBrowser);
                 $this->view->addSuccessMessage('Inloggning lyckades');    
             }
         }
@@ -86,13 +88,15 @@ class AuthenticationController
      */
     public function doLoginWithCredentials()
     {
+        $inputIP = $this->view->getIP();
+        $inputBrowser = $this->view->getBrowserInfo();
         $savedCredentials = $this->view->getSavedCredentials();
 
         try
         {
             /* $savedCredentials[0] == username
              * $savedCredentials[1] == password */
-            $this->model->loginUserWithCredentials($savedCredentials[0], $savedCredentials[1]);
+            $this->model->loginUserWithCredentials($savedCredentials[0], $savedCredentials[1], $inputIP, $inputBrowser);
             $this->view->addSuccessMessage('Inloggning lyckades via cookies');
         }
         catch (Exception $e)

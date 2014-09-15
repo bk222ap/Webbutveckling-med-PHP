@@ -65,11 +65,8 @@ class AuthenticationModel
      * 
      * @return boolean  TRUE if the user is authenticated
      */
-    public function isUserAuthenticated()
+    public function isUserAuthenticated($IP, $browser)
     {
-        $IP = $_SERVER['REMOTE_ADDR'];
-        $browser = $_SERVER['HTTP_USER_AGENT'];
-        
         if ($this->sessionService->issetVar(self::$placeUser))
         {
             if ($this->sessionService->load(self::$placeIP) === $IP &&
@@ -94,11 +91,8 @@ class AuthenticationModel
      * 
      * @return User The authenicated user
      */
-	public function loginUser($username, $password, $saveCredentials = false)
-	{
-	    $IP = $_SERVER['REMOTE_ADDR'];
-        $browser = $_SERVER['HTTP_USER_AGENT'];
-        
+	public function loginUser($username, $password, $IP, $browser, $saveCredentials = false)
+	{   
 	    try
 	    {
 	        $user = new User($username, $password);
@@ -152,12 +146,10 @@ class AuthenticationModel
      * 
      * @return User The authenticated user
      */
-    public function loginUserWithCredentials($username, $password)
+    public function loginUserWithCredentials($username, $password, $IP, $browser)
     {
         $timestamp = time();
-        $IP = $_SERVER['REMOTE_ADDR'];
-        $browser = $_SERVER['HTTP_USER_AGENT'];
-        
+
         try
         {
             $user = new User($username, $password);
