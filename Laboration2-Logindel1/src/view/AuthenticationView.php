@@ -258,14 +258,14 @@ class AuthenticationView extends HTMLView
         $body = '
             <div id="main">
                 <h1>Laboration 2 - ba222ec</h1>
-                <h2>' . $this->model->getUser()->getUsername() . ' är inloggad</h2>';
+                <h2>' . $this->model->getUser()->getUsername() . ' är inloggad</h2>' . "\n";
         
         if ($successMessage != '')
         {
             $body .= '<p class="success">' . $successMessage . '</p>';
         }
                 
-        $body .='<form method="POST" action="">
+        $body .='<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">
                     <input type="submit" name="' . self::$NameLogoutButton . '" value="Logga ut" />
                 </form>' . "\n";
                 
@@ -286,14 +286,14 @@ class AuthenticationView extends HTMLView
         $body = '
             <div id="main">
                 <h1>Laboration 2 - ba222ec</h1>
-                <h2>Ej inloggad</h2>';
+                <h2>Ej inloggad</h2>' . "\n";
         
         if ($successMessage != '')
         {
             $body .= '<p class="success">' . $successMessage . '</p>';
         }
                     
-        $body .='<form method="POST" action="">
+        $body .='<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">
                     <fieldset>
                         <legend>Logga in:</legend>' . "\n";
 
