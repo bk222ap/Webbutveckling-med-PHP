@@ -26,6 +26,16 @@
     <dd>
         Undervisande lärare i en Kurs.
     </dd>
+    <dt>Statistik över gjorda quiz</dt>
+    <dd>
+        <strong>För studenter:</strong> Medelpoäng i procent, 
+        enskilda resultat på varje testtillfälle, medelpoäng över 
+        samtliga användaren resultat, uträkningarna görs per quiz. 
+        Alla gjorda quiz visas grupperade efter kurs.</br>
+        <strong>För lärare:</strong> Uträkningar per quiz grupperade 
+        efter kurs. Läraren kan också välja att se statistik på ett 
+        enskilt quiz och ser då uträkningar gjorda per fråga.
+    </dd>
     <dt>Student</dt>
     <dd>
         Person registrerad som student på LNU.

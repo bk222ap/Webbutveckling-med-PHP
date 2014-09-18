@@ -12,6 +12,8 @@
     </tr>
 </table>
 
+Användaren autentiserar sig och loggar in i systemet.
+
 ##Primär aktör
 +   Användare
 
@@ -25,6 +27,15 @@ Inga förkrav.
 Användaren ska vara inloggad.
 
 ##Scenario
-Användningsfallet startar när en användare vill logga in i applikationen. 
-Användaren anger sina autentiseringsuppgifter. Om uppgifterna är rätt så loggas 
-användaren in, om de är fel så visar systemet ett felmeddelande.
++ 1 - DF1 startar när en användare vill autentisera sig och logga in
++ 2 - Systemet presenterar ett inloggningsformulär
++ 3 - Användaren matar in sina [autentisieringsuppgifter](../Ordlista.md)
++ 4 - Systemet loggar in användaren
+
+##Alternativscenario
++ 3a - Användarens uppgifter är felaktiga
+    + 1 - Systemet visar felmeddelande
+    + 2 - *Gå tillbaka till punkt 3*
++ 4a - Ett fel inträffar när systemet ska logga in personen
+    + 1 - Systemet visar ett felmeddelande
+    + 2 - *Gå tillbaka till punkt 3*

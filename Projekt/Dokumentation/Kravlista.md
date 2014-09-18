@@ -23,7 +23,7 @@
         <th>Prioritet</th>
     </tr>
     <tr>
-        <td><a href="Krav/AF13-Visa-kursstatistik.md">AF13 - Visa kursstatistik</a></td>
+        <td><a href="Krav/AF13-Visa-statistik.md">AF13 - Visa statistik</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
         <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a></td>

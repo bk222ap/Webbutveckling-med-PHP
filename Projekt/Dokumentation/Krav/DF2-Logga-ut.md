@@ -12,6 +12,8 @@
     </tr>
 </table>
 
+En autentiserad användare loggar ut ut systemet.
+
 ##Primär aktör
 +   Användare
 
@@ -25,5 +27,7 @@
 Användaren ska vara utloggad.
 
 ##Scenario
-Användningsfallet startar användaren vill logga ut. Användaren väljer att logga 
-ut från systemet. Systemet loggar ut användaren.
++ 1 - DF2 börjar när en användare inte längre vill vara inloggad
++ 2 - Systemet presenterar ett val att logga ut
++ 3 - Användaren väljer att logga ut
++ 4 - Systemet loggar ut användaren
