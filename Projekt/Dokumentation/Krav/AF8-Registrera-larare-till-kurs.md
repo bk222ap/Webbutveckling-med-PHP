@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF7** Skapa kurslärarkonto
 
 ##Efterkrav
 Vald lärare ska vara registrerad vid vald kurs.

@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF2** Registrera student i kurs
 
 ##Efterkrav
 Val student ska inte länge vara registrerad vid vald kurs.

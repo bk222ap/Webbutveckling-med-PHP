@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF10** Skapa kurs
 
 ##Efterkrav
 Kursen ska vara borttagen från systemet.

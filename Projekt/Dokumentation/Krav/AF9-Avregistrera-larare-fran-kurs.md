@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF8** Registrera lärare till kurs
 
 ##Efterkrav
 Val lärare ska inte länge vara registrerad vid vald kurs.

@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF4** Skapa quiz
 
 ##Efterkrav
 Det valda quizet ska vara bortaget.

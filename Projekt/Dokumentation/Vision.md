@@ -59,7 +59,7 @@ exempelvis på facebook.
     Skapare och författare till systemet. Gör projektet som en del av 
     kursen *Webbutveckling med PHP*.
 
-+   **Tobias Olsson och Emil Carlsson, LNU**    
++   **Daniel Toll och Emil Carlsson, LNU**    
     Lärare i kursen *Webbutveckling med PHP*. Handleder projektet och 
     betygsätter resultatet.
 
@@ -74,7 +74,5 @@ databas är av typen [MySQL](http://www.mysql.com/).
     från handhållna enheter.
 +   **BF2** - Applikationen ska kunna fungera i de nyare versionerna av 
     webbläsarna IE, FireFox, Chrome och Safari.
-+   **BF3** - Kurslärare ska snabbt och enkelt kunna lägga till och ta bort 
-    studenter från kurser.
-+   **BF4** - Kurslärare och administratörer ska snabbt och enkelt kunna 
-    hantera quiz.
++   **BF3** - Kurslärare och administratörer ska snabbt och enkelt kunna 
+    hantera quiz, kurser och studenter.

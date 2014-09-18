@@ -20,7 +20,6 @@
 
 ##Förkrav
 +   **DF1** Logga in
-+   **AF1** Skapa studentkonto
 
 ##Efterkrav
 Vald student ska vara registrerad vid vald kurs.
