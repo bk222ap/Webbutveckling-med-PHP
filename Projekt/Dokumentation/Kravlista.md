@@ -18,7 +18,7 @@
         <th>Namn</th>
         <th>Författare</th>
         <th>Beroende</th>
-        <th>Baskrav<th>
+        <th>Baskrav</th>
         <th>Status</th>
         <th>Prioritet</th>
     </tr>
@@ -26,7 +26,7 @@
         <td><a href="Krav/AF13-Visa-kursstatistik.md">AF13 - Visa kursstatistik</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a></td>
         <td>Ej påbörjad</td>
         <td>Hög</td>
     </tr>
@@ -34,7 +34,7 @@
         <td><a href="Krav/AF14-Gor-quiz.md">AF14 - Gör quiz</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a></td>
         <td>Ej påbörjad</td>
         <td>Hög</td>
     </tr>
@@ -42,15 +42,15 @@
         <td><a href="Krav/DF1-Logga-in.md">DF1 - Logga in</a></td>
         <td>Svante Arvedson</td>
         <td></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a></td>
         <td>Ej påbörjad</td>
         <td>Hög</td>
     </tr>
     <tr>
-        <td><a href="Krav/DF2-Logga.ut.md">DF2 - Logga ut</a></td>
+        <td><a href="Krav/DF2-Logga-ut.md">DF2 - Logga ut</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a></td>
         <td>Ej påbörjad</td>
         <td>Hög</td>
     </tr>
@@ -58,7 +58,7 @@
         <td><a href="Krav/AF2-Registrera-student-i-kurs.md">AF2 - Registrera student i kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Medel</td>
     </tr>
@@ -66,7 +66,7 @@
         <td><a href="Krav/AF4-Skapa-quiz.md">AF4 - Skapa quiz</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Medel</td>
     </tr>
@@ -74,7 +74,7 @@
         <td><a href="Krav/AF5-Tag-bort-quiz.md">AF5 - Tag bort quiz</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Medel</td>
     </tr>
@@ -82,7 +82,7 @@
         <td><a href="Krav/AF6-Redigera-quiz.md">AF6 - Redigera quiz</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Medel</td>
     </tr>
@@ -90,7 +90,7 @@
         <td><a href="Krav/AF3-Avregistrera-student-fran-kurs.md">AF3 - Avregistrera student från kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -98,7 +98,7 @@
         <td><a href="Krav/AF1-Skapa-studentkonto.md">AF1 - Skapa studentkonto</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -106,7 +106,7 @@
         <td><a href="Krav/AF7-Skapa-kurslararkonto.md">AF7 - Skapa kurslärarkonto</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -114,7 +114,7 @@
         <td><a href="Krav/AF8-Registrera-larare-till-kurs.md">AF8 - Registrera lärare till kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -122,7 +122,7 @@
         <td><a href="Krav/AF9-Avregistrera-larare-fran-kurs.md">AF9 - Avregistrera lärare från kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -130,7 +130,7 @@
         <td><a href="Krav/AF10-Skapa-kurs.md">AF10 - Skapa kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -138,7 +138,7 @@
         <td><a href="Krav/AF11-Tag-bort-kurs.md">AF11 - Tag bort kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -146,7 +146,7 @@
         <td><a href="Krav/AF12-Redigera-kurs.md">AF12 - Redigera kurs</a></td>
         <td>Svante Arvedson</td>
         <td><a href="Krav/DF1-Logga-in.md">DF1 Logga in</a></td>
-        <td><a href="Vision.md#Baskrav">BF1</a>, <a href="Vision.md#Baskrav">BF2</a>, <a href="Vision.md#Baskrav">BF3</a></td>
+        <td><a href="Vision.md#baskrav">BF1</a>, <a href="Vision.md#baskrav">BF2</a>, <a href="Vision.md#baskrav">BF3</a></td>
         <td>Ej påbörjad</td>
         <td>Låg</td>
     </tr>
@@ -187,7 +187,7 @@
         <th>Namn</th>
         <th>Författare</th>
         <th>Beroende</th>
-        <th>Baskrav<th>
+        <th>Baskrav</th>
         <th>Status</th>
     </tr>
 </table>

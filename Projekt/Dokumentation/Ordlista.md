@@ -33,8 +33,8 @@
     <dt>Quiz</dt>
     <dd>
         En eller flera frågor med flera svarsalternativ. På varje 
-        fråga kan noll, ett eller frela av svarsalternativen vara 
-        korrekta, altervativt flera svarsalternativ i kombination 
+        fråga kan 0, 1 eller flera av svarsalternativen vara 
+        korrekta, altervativt så kan flera svarsalternativ i kombination 
         utgöra ett korrekt svar.
     </dd>
 </dl>
